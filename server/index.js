@@ -45,13 +45,14 @@ io.on('connection', socket => {
     }
     socket.emit('users', users);
 
-    socket.broadcast.emit('user connected', {
+    const newUser = {
         userId: socket.id,
         username: socket.username,
         messages: []
-    })
+    }
+    socket.emit('new_user', newUser);
 
-    console.log(`user connected ${socket.id}`)
+    // console.log(`user connected ${socket.id}`)
 
     socket.on('join_room', data => {
         socket.join(data);
@@ -66,7 +67,7 @@ io.on('connection', socket => {
             message,
             from: socket.id
         })
-        socket.emit('users', users);
+        // socket.emit('users', users);
     })
 })
 

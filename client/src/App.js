@@ -21,11 +21,11 @@ const App = () => {
 
   const selectUsername = () => {
     socket.auth = { username };
-    console.log(username, socket.auth)
+    // console.log(username, socket.auth)
   }
 
   const joinRoom = () => {
-    console.log(room);
+    // console.log(room);
 
     socket.connect();
     socket.emit('join_room', room);
@@ -42,14 +42,18 @@ const App = () => {
       //   ...prev, 
       //   messages: [...prev.messages, { message, fromSelf: true }]
       // }))
-      const newUsers = users.map(user => {
-        if (user.userId === selectedUser.userId) {
-          user.messages = [...user.messages, {message, fromSelf: false}];
-        }
-        return user;
-      })
-      setUsers(newUsers);
-      console.log(newUsers);
+
+
+      // const newUsers = users.map(user => {
+      //   if (user.userId === selectedUser.userId) {
+      //     user.messages = [...user.messages, {message, fromSelf: false}];
+      //   }
+      //   return user;
+      // })
+      // setUsers(newUsers);
+
+
+      // console.log(newUsers);
 
     } else {
       socket.emit('send_message', { message, room })
@@ -63,7 +67,8 @@ const App = () => {
     })
 
     socket.on('private_message', ({message, from}) => {
-      // alert('pm received: '+message+' from: '+from)
+      alert('pm received: '+message+' from: '+from)
+      console.log(message)
       setMessageReceived(message)
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
@@ -91,7 +96,7 @@ const App = () => {
     })
 
     socket.on('connect', () => {
-      console.log(socket.id)
+      // console.log(socket.id)
     })
 
     socket.on('users', users => {
@@ -109,14 +114,22 @@ const App = () => {
       setUsers(newUsers);
     })
 
-    socket.on('user connected', user => {
-      setUsers(prev => ([...prev, user]));
-    })
+    // socket.on('new_user', newUser => {
+    //   console.log(newUser);
+    //   setUsers(prev => ([...prev, newUser]));
+    // })
+
+    // socket.on('user connected', user => {
+    //   setUsers(prev => ([...prev, user]));
+    // })
 
     return () => {
       socket.off('receive_message');
+      socket.off('private_message');
       socket.off('connect_error');
+      socket.off('connect');
       socket.off('users');
+      socket.off('new_user');
       socket.off('user connected');
     }
   }, [])
@@ -135,12 +148,11 @@ const App = () => {
               key={idx} 
               onClick={() => setSelectedUser({
                 username: user.username, 
-                userId: user.userId,
-                messages: []
+                userId: user.userId
               })}
               className={selectedUser && selectedUser.userId === user.userId ? 'selected' : ''}
             >
-              {user.username} <small>{user.userId}</small>
+              {user.username} - {user.userId} - {JSON.stringify(user.messages)}
             </p>
           )
         })
