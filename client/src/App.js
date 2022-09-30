@@ -67,8 +67,8 @@ const App = () => {
     })
 
     socket.on('private_message', ({message, from}) => {
-      alert('pm received: '+message+' from: '+from)
-      console.log(message)
+      // alert('pm received: '+message+' from: '+from)
+      // console.log(message)
       setMessageReceived(message)
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
